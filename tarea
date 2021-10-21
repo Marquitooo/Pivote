@@ -1,3 +1,8 @@
+"""
+Marco Ramirez Lopez 
+Jose Pablo Muñoz Guerrero
+"""
+
 import numpy as np
 
 def gradient(x, A, b):
