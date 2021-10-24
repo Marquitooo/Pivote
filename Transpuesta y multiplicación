@@ -1,2 +1,96 @@
+"""
+Metodo del gradiente
 
-print("Hola")
+Hecho por Marco Ramírez López
+        y Jose Pablo Munoz Guerrero
+"""
+
+import numpy as np
+
+#Tasa de aprendizaje
+k=0.001
+u=0.0001
+itmax=50
+
+def printm(A):
+    for i in range(len(A)):
+        print(A[i])
+
+def transponer(A):
+    AT=[]
+    for i in range(len(A)):
+        aux=[]
+        for j in range(len(A)):
+            aux.append(A[j][i])
+        AT.append(aux)
+    return AT
+        
+def multM(A,b):
+    C=[]
+    for i in range(len(A)):
+        for j in range(len(b)):
+            x=0
+            for k in range(len(A[0])):
+                x=x+A[i][k]*b[k]
+        C.append(x)
+    return C
+
+def multE(A,n):
+    B=[]
+    for i in range(len(A)):
+        #Filtra los vectores de las matrices
+        aux=[]
+        if isinstance(A[0], list):
+            for j in range(len(A[i])):
+                x=A[i][j]
+                aux.append(n*x)
+            B.append(aux)
+        else:
+            B.append(n*A[i])
+    return B
+
+def resta(A,B):
+    C=[]
+    for i in range(len(A)):
+        if isinstance(A[0],list):
+            aux=[]
+            for j in range(len(A[0])):
+                aux.append(A[i][j]-B[i][j])
+            C.append(aux)
+        else:
+            C.append(A[i]-B[i])
+    return C
+
+def gradiente(x_sol,A,b, umbral, itmax):
+    element_1=multM(transponer(A),multM(A,x_sol))
+    element_2=multM(transponer(A),b)
+    
+    #e1=np.dot(np.transpose(A),np.dot(A,x_sol))
+    #e2=np.dot(np.transpose(A),b)
+    
+    for i in range(itmax):
+        #m1=multE(element_1,2)
+        #m2=multE(element_2,2)
+        #error=resta(m1,m2)
+        #dif=multE(error,k)
+        #x_sol=resta(x_sol,dif)
+        
+        x_sol=resta(x_sol,multE(resta(multE(element_1,2),multE(element_2,2)),k))
+        
+        #x_sol=x_sol-np.dot((np.dot(e1,2)-np.dot(e2,2)),k)
+        
+        print(i,x_sol)
+        btent=multM(A,x_sol)
+        
+        #btent=np.dot(A,x_sol)
+        error = np.sum(np.abs(resta(btent-b)))
+        if error < umbral:
+            return x_sol
+
+x=[1.0,1.0,1.0]
+A=[[2.0,1.0,-3.0],[5.0,-4.0,1.0],[1.0,-1.0,-4.0]]
+b=[7.0,-19.0,4.0]
+
+
+gradiente(x,A,b, u,itmax)
+print("b:",multM(A,x))
